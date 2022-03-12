@@ -3,12 +3,14 @@
 
 import * as React from 'react'
 import {useState, useEffect} from 'react'
+import {useLocalStorageState} from '../utils'
 
 function Board() {
   const localSquaresVal = JSON.parse(window.localStorage.getItem('squares'))
 
-  const [squares, setSquares] = useState(
-    () => localSquaresVal ?? Array(9).fill(null),
+  const [squares, setSquares] = useLocalStorageState(
+    'squares',
+    Array(9).fill(null),
   )
   const [nextValue, setNextValue] = useState('X')
   const [winner, setWinner] = useState(null)
@@ -19,12 +21,12 @@ function Board() {
     setNextValue(calculateNextValue(squares))
     setStatus(calculateStatus(winner, squares, nextValue))
     setWinner(calculateWinner(squares))
-    saveGame()
+    // saveGame()
   }, [squares, nextValue, status, winner])
 
-  function saveGame() {
-    window.localStorage.setItem('squares', JSON.stringify(squares))
-  }
+  // function saveGame() {
+  //   window.localStorage.setItem('squares', JSON.stringify(squares))
+  // }
 
   function selectSquare(square) {
     if (winner || squares[square] === 'X' || squares[square] === 'O') {
