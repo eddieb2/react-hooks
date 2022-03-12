@@ -5,18 +5,26 @@ import * as React from 'react'
 import {useState, useEffect} from 'react'
 
 function Board() {
-  const [squares, setSquares] = useState(Array(9).fill(null))
+  const localSquaresVal = JSON.parse(window.localStorage.getItem('squares'))
+
+  const [squares, setSquares] = useState(
+    () => localSquaresVal ?? Array(9).fill(null),
+  )
   const [nextValue, setNextValue] = useState('X')
   const [winner, setWinner] = useState(null)
   const [status, setStatus] = useState(() =>
     calculateStatus(winner, squares, nextValue),
   )
-
   useEffect(() => {
     setNextValue(calculateNextValue(squares))
     setStatus(calculateStatus(winner, squares, nextValue))
     setWinner(calculateWinner(squares))
+    saveGame()
   }, [squares, nextValue, status, winner])
+
+  function saveGame() {
+    window.localStorage.setItem('squares', JSON.stringify(squares))
+  }
 
   function selectSquare(square) {
     if (winner || squares[square] === 'X' || squares[square] === 'O') {
